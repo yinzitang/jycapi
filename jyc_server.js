@@ -27,15 +27,22 @@ app.get('/code2Session', function (req, res) {
 	// })
 	// requ.write(data);
 	// requ.end();
+	console.log('相应结构数据',res)
+	var encryptedData = JSON.stringify(req.query.encryptedData);
+	console.log('加密数据字符串',encryptedData);
+	var iv = JSON.stringify(req.query.iv);
 	var url = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&js_code=${req.query.code}&secret=${secret}&grant_type=authorization_code`
 	request(url,function(error,response,body){
 		if(!error && response.statusCode == 200){
-          //输出返回的内容
-          console.log(body);
-          data = body
+          	//输出返回的内容
+          	console.log(body);
+          	data = JSON.parse(body);
+          	console.log(data);
+          	var pc = new WXBizDataCrypt(appid, data.session_key);
+          	data = pc.decryptData(encryptedData,iv);
+  			res.end(JSON.stringify(data));
       	}
   	});
-  	res.end(JSON.stringify(data));
 })
 
 var server = app.listen(8081, function () {
