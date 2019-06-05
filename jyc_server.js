@@ -78,7 +78,24 @@ app.get('/createwxaqrcode',function (req,res) {
 		}
 	}).pipe(fs.createWriteStream('123.png'))
 })
-var server = app.listen(8081, function () {
+app.use('/img', express.static('img'));
+app.get('/index.html',function (req,res) {
+	fs.readFile('E:/2019/05/jycapi/index.html', function (err, data) {
+		         if (err) {
+		            res.writeHeader(404, {'content-type': 'text/html;charset="utf-8"'});
+		            res.write('<h1>404错误</h1><p>你要找的页面不存在</p>');
+		            res.end();
+		
+		        } else {
+		            res.writeHeader(200, {'content-type': 'text/html;charset="utf-8"'});
+		            // res.write(data);
+		            res.end(data);
+				}
+		    });
+})
+
+
+var server = app.listen(8081, function (req,res) {
 
 	var host = server.address().address
 	var port = server.address().port
